@@ -1,0 +1,4 @@
+문 규격 : 가로(83.3cm), 세로(203.1cm)
+문 질량 : 13.7kg
+회전축까지 거리(r) : 75.9cm
+측정 기기 : Samsung SM-S931N, Phyphox Gyroscope (rotation rate), ~460 Hz

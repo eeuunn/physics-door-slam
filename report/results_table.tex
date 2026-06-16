@@ -1,0 +1,35 @@
+% --- Fast slam (window 7.69-8.0 s, n=144) ---
+\begin{table}[h]\centering
+\caption{Fitting parameters and goodness-of-fit --- fast slam.}
+\label{tab:fits_fast}
+\begin{tabular}{lcccccc}
+\toprule
+Model & $a/I$ & $b/I$ & $c/I$ & $R^2$ & SSE & $\Delta$AIC \\
+\midrule
+\textbf{D} & 1.088 & -- & -- & 0.9441 & 0.08098 & 0.0 \\
+S & -- & 0.5432 & -- & 0.9343 & 0.0952 & 23.3 \\
+N & -- & -- & 0.2706 & 0.9238 & 0.1104 & 44.7 \\
+DS & 1.088 & 1.923e-07 & -- & 0.9441 & 0.08098 & 2.0 \\
+DN & 1.088 & -- & 4.58e-18 & 0.9441 & 0.08098 & 2.0 \\
+SN & -- & 0.5432 & 1.78e-20 & 0.9343 & 0.0952 & 25.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% --- Slow slam (window 8.9-11.5 s, n=1206) ---
+\begin{table}[h]\centering
+\caption{Fitting parameters and goodness-of-fit --- slow slam.}
+\label{tab:fits_slow}
+\begin{tabular}{lcccccc}
+\toprule
+Model & $a/I$ & $b/I$ & $c/I$ & $R^2$ & SSE & $\Delta$AIC \\
+\midrule
+D & 0.1203 & -- & -- & 0.9879 & 0.12 & 1785.3 \\
+S & -- & 0.2911 & -- & 0.9967 & 0.03321 & 236.5 \\
+N & -- & -- & 0.6752 & 0.9896 & 0.103 & 1601.9 \\
+DS & 0.0001393 & 0.2908 & -- & 0.9967 & 0.03321 & 238.5 \\
+\textbf{DN} & 0.05793 & -- & 0.3556 & 0.9973 & 0.02725 & 0.0 \\
+SN & -- & 0.2699 & 0.0495 & 0.9967 & 0.03277 & 222.4 \\
+\bottomrule
+\end{tabular}
+\end{table}

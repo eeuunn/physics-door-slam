@@ -1,0 +1,335 @@
+\documentclass[11pt,letterpaper]{article}
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\graphicspath{{../figures/}}
+% --- Color Palette (De-saturated, Academic & Professional) ---
+\definecolor{ajpblue}{RGB}{28, 54, 115}
+\definecolor{ajpsec}{RGB}{54, 95, 145}
+\definecolor{bglight}{RGB}{245, 247, 250}
+\definecolor{bordergrey}{RGB}{210, 215, 223}
+% --- Hyperref Setup ---
+\hypersetup{colorlinks=true, linkcolor=ajpblue, citecolor=ajpsec, urlcolor=ajpblue}
+% --- Typography & Headings Styling ---
+\titleformat{\section}{\large\bfseries\color{ajpblue}}{\thesection}{1em}{}[{\titlerule[0.5pt]}]
+\titleformat{\subsection}{\normalsize\bfseries\color{ajpsec}}{\thesubsection}{1em}{}
+% --- Custom Environments ---
+\newtcolorbox{equationbreakdown}[1]{colback=bglight, colframe=ajpblue,
+  fonttitle=\bfseries, title={#1}, arc=3pt, boxrule=1pt, bottomtitle=2mm, toptitle=2mm}
+\newtcolorbox{physicsinsight}{colback=bglight, colframe=ajpsec, boxrule=0.5pt,
+  left=4mm, right=4mm, top=3mm, bottom=3mm, arc=2pt}
+% --- Title & Metadata ---
+\title{\vspace{-1.5in}
+\rule{\linewidth}{1.5pt} \\ \vspace{4mm}
+\large\textbf{PHYSICS GROUP PROJECT REPORT} \\ \vspace{2mm}
+\Large\textbf{Rotational and Frictional Dynamics of\\ the Slamming of a Door}
+\\ \vspace{4mm}
+\large\textit{An analysis of Klein et al., American Journal of Physics 85, 30 (2017)} \\
+\rule{\linewidth}{1.5pt}}
+\author{
+\begin{tabular}{r @{\quad} l}
+\textbf{Project Group:} & Team solvE \,(Group 14) \\[1ex]
+\textbf{Group Members:} & Eunwoo Chae \textit{(Data analysis, GitHub, Report \LaTeX)} \\
+ & Seongmin Kang \textit{(Report \& computation)} \\
+ & Minseok Jang \textit{(Experiment)} \\
+ & Solbi Joo \textit{(Presentation \& video)} \\[1ex]
+\textbf{Course Title:}  & General Physics \\
+\textbf{Instructor:}    & Prof. Deniz Olgu Devecio\u{g}lu \\
+\textbf{Department:}    & DGIST
+\end{tabular}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+The slamming of a door is a simple instance of damped rotational motion in which more than
+one friction mechanism may act simultaneously. Klein et al.\ examined which of the three
+standard velocity dependences of the frictional torque, constant (dry), linear (Stokes), or
+quadratic (Newtonian air drag), best describes the motion. We reproduce their analysis both
+theoretically and experimentally. The angular velocity of a real door was measured directly
+with a smartphone gyroscope, so that the conversion from radial acceleration used in the
+original work was not required. Two slams of different initial spin were recorded, the six
+friction models were fitted to the free-rotation portion of each, and the equation of motion
+was integrated numerically to verify the closed-form solutions. Following the original
+paper, the models are distinguished not by goodness of fit but by the physical plausibility
+of the fitted coefficients. On this basis the Stokes and dry-friction models are rejected,
+and the quadratic air-drag term is found to be the only physically consistent description,
+in agreement with Klein et al.
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+
+% =========================================================================
+\section{Introduction and Contextual Background}
+% =========================================================================
+\subsection{Historical and Pedagogical Significance}
+Damped rotational motion is commonly introduced with a single friction term chosen for
+analytical convenience, a constant torque in one treatment and a term linear in velocity in
+another. Klein et al.\ point out that this practice obscures the question of which mechanism
+actually dominates a given system, and they adopt a familiar example for which students
+already possess physical intuition, the closing of a door. The paper is aimed at
+introductory and lower-division undergraduates, and its principal contribution is
+methodological. A friction model may reproduce the data closely and still be incorrect, so
+the choice between candidate models must rest on a comparison of the fitted coefficients
+with independent physical estimates. This principle guides the present report.
+
+\subsection{Physical Setup and System Parameters}
+The door rotates about a vertical hinge axis, so that gravity produces no torque and the
+motion is opposed only by friction at the hinges and by air drag on the door surface. We
+model the door as a uniform thin rectangular plate of width $w$ and mass $m$, with a
+smartphone fixed at a distance $r$ from the axis. In contrast to the original experiment,
+which recorded a radial acceleration and converted it through $\omega=\sqrt{a_r/r}$, the
+gyroscope used here reports the angular velocity directly and removes this intermediate
+step. The measured quantities are listed in Table~\ref{tab:variables}.
+
+\begin{table}[h!]
+\centering
+\caption{Symbols and measured values for the door.}
+\label{tab:variables}
+\begin{tabular}{lll}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Value / unit} \\
+\midrule
+$m$ & mass of the door & $13.7$ kg \\
+$w$ & width & $0.833$ m \\
+$h$ & height & $2.031$ m \\
+$r$ & hinge-to-phone distance & $0.759$ m \\
+$\omega$ & angular velocity & rad/s \\
+$\tau_f$ & frictional torque & N\,m \\
+$a,b,c$ & dry, Stokes, Newton coefficients & N\,m, N\,m\,s, N\,m\,s$^2$ \\
+$I=\tfrac13 mw^2$ & moment of inertia & $3.17$ kg\,m$^2$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================================================================
+\section{Step-by-Step Mathematical Derivations}
+% =========================================================================
+Several intermediate steps are stated without derivation in the original paper. We reproduce
+them explicitly for the three results on which the analysis depends, namely the moment of
+inertia, the form of the frictional torque, and the solution of the equation of motion.
+
+\subsection{Equation of Motion}
+For rotation about a fixed axis under a single net frictional torque opposing the motion,
+Newton's second law gives $-I\,d\omega/dt=\tau_f$. Taking the frictional torque to contain
+constant, linear, and quadratic contributions, $\tau_f=a+b\omega+c\omega^2$ with
+$a,b,c\ge 0$, yields
+\begin{equation}\label{eq:ode}
+\frac{d\omega}{dt}=-\bigl(A+B\omega+C\omega^2\bigr),
+\qquad A\equiv\frac{a}{I},\quad B\equiv\frac{b}{I},\quad C\equiv\frac{c}{I}.
+\end{equation}
+The reduced coefficients $A$, $B$, and $C$ are used throughout, since they are the
+quantities returned directly by a fit without separate knowledge of $I$.
+
+\subsection{Moment of Inertia of the Door}
+The moment of inertia about the hinge is obtained from $I=\int r_\perp^2\,dm$ with
+$r_\perp^2=x^2+y^2$ for a plate of uniform density $\rho$.
+
+\begin{equationbreakdown}{Reducing $I$ to $\tfrac{1}{3}mw^2$}
+Taking the hinge as the $z$-axis, width along $x$ ($0\le x\le w$) and thickness along $y$
+($0\le y\le d$),
+\begin{equation*}
+I=\rho\int_0^h\!\!\int_0^d\!\!\int_0^w\!\bigl(x^2+y^2\bigr)\,dx\,dy\,dz
+ =\rho\,h\,d\,\Bigl(\tfrac{1}{3}w^3+w\,\tfrac{1}{3}d^2\Bigr)
+ =\tfrac13\rho\,h\,d\,w\,(w^2+d^2).
+\end{equation*}
+A door is thin, $d\ll w$, so the $d^2$ term is negligible. Using $\rho=m/(whd)$,
+\begin{equation*}
+I\approx\tfrac13\rho\,h\,d\,w^3=\tfrac13 mw^2.
+\end{equation*}
+For our door this is $I=\tfrac13(13.7)(0.833)^2=3.17~\mathrm{kg\,m^2}$.
+\end{equationbreakdown}
+
+\subsection{Origin of the Three Torque Terms}
+The three contributions to $\tau_f$ have distinct physical origins, which is what later
+allows the fitted coefficients to be judged. Dry friction at the bearings is essentially
+independent of speed, so $\tau_{\mathrm{dry}}=a$. A Stokes drag force is proportional to the
+local velocity $v=r\omega$, and because torque introduces a further factor of $r$, it gives
+$\tau_{\mathrm{Stokes}}=b\omega$. Newtonian air drag scales as $v^2$, and the same argument
+gives $\tau_{\mathrm{Newton}}=c\omega^2$. Which contribution dominates cannot be decided
+a priori.
+
+\subsection{Solving the Equation of Motion}
+Equation~\eqref{eq:ode} is separable. Retaining a single term at a time gives the three
+one-mechanism solutions,
+\begin{align}
+\omega_{D}(t) &= \omega_0 - A t,
+&\omega_{S}(t) &= \omega_0\,e^{-Bt},
+&\omega_{N}(t) &= \frac{\omega_0}{1+C\omega_0 t},
+\end{align}
+while the pairwise combinations give
+\begin{align}
+\omega_{DS}(t) &= \Bigl(\omega_0+\tfrac{A}{B}\Bigr)e^{-Bt}-\tfrac{A}{B}, \\
+\omega_{SN}(t) &= \frac{B\,\omega_0}{(B+C\omega_0)\,e^{Bt}-C\omega_0}, \\
+\omega_{DN}(t) &= \sqrt{\tfrac{A}{C}}\;
+   \tan\!\Bigl(\arctan\!\bigl(\omega_0\sqrt{\tfrac{C}{A}}\bigr)-\sqrt{AC}\,t\Bigr).
+\end{align}
+The general solution for $a,b,c\neq0$ is given in the appendix of the original paper. It is
+not needed here, since in every fit at least one coefficient was driven to zero. All six
+expressions are implemented in \texttt{src/friction\_models.py}.
+
+% =========================================================================
+\section{Physical Approximations and Limiting Cases}
+% =========================================================================
+It is useful to ask in advance how distinguishable these solutions are. Expanding each for
+small $t$,
+\begin{equation}
+\omega(t)\approx\omega_0-\bigl(A+B\omega_0+C\omega_0^2\bigr)\,t+\mathcal{O}(t^2),
+\end{equation}
+so that to first order every model reduces to a straight line with the same initial slope.
+The curvature that distinguishes the dry, Stokes, and Newtonian cases appears only after
+$\omega$ has changed appreciably. A door slammed hard reaches the frame within a fraction of
+a second and loses little of its angular velocity beforehand, so its free-rotation record is
+short and nearly linear, and such a record cannot by itself separate the models.
+
+\begin{physicsinsight}
+A nearly linear $\omega(t)$ suggests a constant torque, and hence dry friction. Klein et
+al.\ caution against this inference, noting that over a limited range the data ``look quite
+linear'' even though this appearance does not constitute evidence for the dry model. The
+resolution is to set the fit quality aside and ask whether the fitted coefficient is
+physically reasonable, the approach taken in Section~5.
+\end{physicsinsight}
+
+The two drag laws also correspond to different flow regimes. Stokes drag applies at low
+Reynolds number and Newtonian drag at high Reynolds number. A door moving through air at of
+order $1\,\mathrm{rad/s}$ lies well within the high-Reynolds regime, which already indicates
+which term is expected to dominate physically.
+
+% =========================================================================
+\section{Computational and Experimental Verification}
+% =========================================================================
+\subsection{Measurement}
+A smartphone (Samsung SM-S931N) was attached to the door, and the gyroscope rotation rate
+was recorded with the Phyphox application at approximately $460$~Hz. Two trials were taken, a
+hard (fast) slam and a gentle (slow) one, corresponding to a large and a small initial spin.
+Each record consists of an initial push, a free-rotation phase governed only by friction,
+and a sharp spike as the door meets the frame. Only the free-rotation phase is analysed. The
+short interval immediately before impact, in which the deceleration increases as air is
+compressed against the frame, is excluded, because no term in Eq.~\eqref{eq:ode} can produce
+a growing $|d\omega/dt|$ and the effect is therefore physically distinct.
+Figure~\ref{fig:overview} shows the complete traces with the analysed windows shaded.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{fig1_overview.png}
+\caption{Gyroscope traces for the two slams, with the free-rotation windows shaded. The
+sharp spikes mark the impact with the frame and are excluded from the fits.}
+\label{fig:overview}
+\end{figure}
+
+\subsection{Fits to the Six Models}
+Each model was fitted with \texttt{scipy.optimize.curve\_fit}. The resulting parameters and
+fit quality are given in Tables~\ref{tab:fits_fast} and~\ref{tab:fits_slow}, and the fitted
+curves are shown in Fig.~\ref{fig:fits}. In the fast slam the angular velocity decreases only
+from $2.08$ to $1.79~\mathrm{rad/s}$, that is, to $0.86\,\omega_0$, and as anticipated in
+Section~3 all six models fit almost equally well, with $R^2$ between $0.92$ and $0.94$. The
+slow slam spans a wider range, from $0.60$ to $0.27~\mathrm{rad/s}$, and the differences
+between the models become apparent. A nested $F$-test comparing the dry model with the
+dry-plus-Newton model gives $F\approx4\times10^{3}$ ($p<0.001$), so that a purely linear law
+is statistically inadequate and the data require curvature.
+
+\input{results_table.tex}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.49\linewidth]{fig_fit_fast.png}\hfill
+\includegraphics[width=0.49\linewidth]{fig_fit_slow.png}
+\caption{Six-model fits to the free-rotation phase of the fast (left) and slow (right)
+slams. In the slow case the straight dry-friction line clearly misses the curvature of the
+data.}
+\label{fig:fits}
+\end{figure}
+
+\subsection{Numerical Check of the Analytical Solutions}
+To confirm the closed-form expressions of Section~2, Eq.~\eqref{eq:ode} was integrated
+directly with \texttt{scipy.integrate.solve\_ivp} (RK45) using the fitted coefficients, and
+the result was compared with the analytic curve (Fig.~\ref{fig:sim}). The two agree to about
+$10^{-8}~\mathrm{rad/s}$, which is at the level of numerical round-off and confirms the
+derivations. The same routine also applies to the general model, for which no simple closed
+form is available.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.66\linewidth]{fig4_simulation.png}
+\caption{Analytic solution versus direct numerical integration for the slow slam. The curves
+are indistinguishable (maximum difference $\sim10^{-8}$~rad/s).}
+\label{fig:sim}
+\end{figure}
+
+% =========================================================================
+\section{Critical Analysis and Commentary}
+% =========================================================================
+Because goodness of fit alone cannot select among the models, each fitted coefficient is
+compared with an order-of-magnitude estimate obtained from first principles, following the
+original paper. For dry friction $a/I=3\mu g/w$, for Stokes drag $b/I\lesssim 18\pi\eta w/m$,
+and for Newtonian drag $c/I\lesssim\tfrac32 C_D\rho A w/m$, with
+$\eta=1.7\times10^{-5}~\mathrm{Pa\,s}$, $\rho=1.3~\mathrm{kg/m^3}$, and $C_D=1.5$. The
+comparison is summarised in Table~\ref{tab:validity} and Fig.~\ref{fig:validity}.
+
+\input{validity_table.tex}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{fig5_validity.png}
+\caption{Fitted coefficients against their physical estimates. The Newtonian $c/I$ lands on
+the predicted value; the Stokes $b/I$ overshoots by three to four orders of magnitude; and
+the dry-friction coefficient implies two incompatible values of $\mu$.}
+\label{fig:validity}
+\end{figure}
+
+The fitted Stokes coefficient is of order $0.3$ to $0.6~\mathrm{s^{-1}}$, roughly $10^{3}$
+to $10^{4}$ times the estimate of $6\times10^{-5}~\mathrm{s^{-1}}$, so that Stokes drag is
+far too weak to account for the observed deceleration. The dry-friction model appears
+adequate until the implied sliding coefficient is examined. It is $\mu\approx0.031$ for the
+fast slam and $\mu\approx0.0034$ for the slow one, a factor of nine apart. Since $\mu$ is a
+material constant and cannot depend on the initial spin, the dry model is internally
+inconsistent; Klein et al.\ rejected it on the analogous ground that the implied torque was
+unreasonably large. The Newtonian coefficient is the only one consistent with its estimate.
+The fitted values $c/I=0.27$ (fast) and $0.68$ (slow) are of the same order as the predicted
+$0.30$, and the increase of $c/I$ at lower spin reproduces the trend reported in the
+original paper, which attributed it to the Reynolds-number dependence of $C_D$.
+
+The limitations of the measurement should also be noted. The fast slam is too short to
+discriminate the models on its own; the same limitation of the slammed-door method is
+reported in the original paper, where $\omega$ decreases only to about $0.75\,\omega_0$
+before impact. In this shorter and noisier window the unconstrained fit even favours the
+simplest (dry) model slightly, which is the situation described in Section~3 and is resolved
+by the physical-validity test. Klein et al.\ avoided the difficulty with a separate, longer
+laboratory experiment on a light plate. The natural extension of the present work is to
+repeat the measurement with the door released from a wider angle at higher spin, so that it
+decelerates over a longer arc without striking the frame. Further sources of uncertainty
+include gyroscope noise, which appears as the lower $R^2$ of the fast window, the
+uncertainty in $r$, and the thin-plate approximation for $I$.
+
+% =========================================================================
+\section{Conclusion}
+% =========================================================================
+A real door was measured with a smartphone gyroscope, the friction models of Klein et al.\
+were reconstructed with their intermediate steps supplied, and the analytic solutions were
+verified by direct numerical integration. Of the six models, the Stokes and dry-friction
+terms are excluded on physical grounds, the former by a discrepancy of three to four orders
+of magnitude in its coefficient and the latter by a coefficient that does not remain
+constant between trials, leaving the quadratic Newtonian air-drag term as the only
+physically consistent description. This agrees with the conclusion of the original paper.
+Beyond the specific result, the project illustrates a general methodological point, that
+agreement with the data is not sufficient to establish a model and that the fitted
+parameters must be confronted with independent physical reasoning.
+
+\begin{thebibliography}{9}
+\bibitem{klein2017} P.~Klein, A.~M\"uller, S.~Gr\"ober, A.~Molz, and J.~Kuhn,
+``Rotational and frictional dynamics of the slamming of a door,''
+\textit{American Journal of Physics} \textbf{85}(1), 30--37 (2017).
+\bibitem{repo} Team solvE, \textit{physics-door-slam}, analysis code and data,
+\url{https://github.com/eeuunn/physics-door-slam}.
+\end{thebibliography}
+\end{document}
