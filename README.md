@@ -12,8 +12,6 @@
 <a href="https://doi.org/10.1119/1.4964134"><img src="https://img.shields.io/badge/AJP-10.1119%2F1.4964134-b31b1b"></a>
 </p>
 
-**English** · [한국어](README.ko.md)
-
 <em>Team solvE (Group 14) · DGIST General Physics</em>
 
 </div>
@@ -98,7 +96,7 @@ cd report && tectonic report.tex      # English
 | Member | Role |
 |---|---|
 | Eunwoo Chae | Data analysis · GitHub · Report (LaTeX) |
-| Seongmin Kang | Report (LaTeX) · Simulation |
+| Kangmin Seong | Report (LaTeX) · Simulation |
 | Minseok Jang | Experiment · Data acquisition |
 | Solbi Joo | Presentation · Video |
 

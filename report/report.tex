@@ -39,7 +39,7 @@
 \begin{tabular}{r @{\quad} l}
 \textbf{Project Group:} & Team solvE \,(Group 14) \\[1ex]
 \textbf{Group Members:} & Eunwoo Chae \textit{(Data analysis, GitHub, Report \LaTeX)} \\
- & Seongmin Kang \textit{(Report \& computation)} \\
+ & Kangmin Seong \textit{(Report \& computation)} \\
  & Minseok Jang \textit{(Experiment)} \\
  & Solbi Joo \textit{(Presentation \& video)} \\[1ex]
 \textbf{Course Title:}  & General Physics \\
@@ -115,68 +115,340 @@ $I=\tfrac13 mw^2$ & moment of inertia & $3.17$ kg\,m$^2$ \\
 % =========================================================================
 \section{Step-by-Step Mathematical Derivations}
 % =========================================================================
-Several intermediate steps are stated without derivation in the original paper. We reproduce
-them explicitly for the three results on which the analysis depends, namely the moment of
-inertia, the form of the frictional torque, and the solution of the equation of motion.
-
-\subsection{Equation of Motion}
-For rotation about a fixed axis under a single net frictional torque opposing the motion,
-Newton's second law gives $-I\,d\omega/dt=\tau_f$. Taking the frictional torque to contain
-constant, linear, and quadratic contributions, $\tau_f=a+b\omega+c\omega^2$ with
-$a,b,c\ge 0$, yields
-\begin{equation}\label{eq:ode}
-\frac{d\omega}{dt}=-\bigl(A+B\omega+C\omega^2\bigr),
-\qquad A\equiv\frac{a}{I},\quad B\equiv\frac{b}{I},\quad C\equiv\frac{c}{I}.
+\subsection{Derivation of the Moment of Inertia}
+ To analyze the rotational motion of a slammed door, the moment of inertia of the door about its hinge axis must be determined.\\
+ The moment of inertia is defined as
+ \begin{equation}\label{eq:start}
+     I=\int r^2\,dm
+ \end{equation}
+ where $r$ is the perpendicular distance from the rotation axis to the mass element $dm$. The door is modeled as a rectangular solid with uniform mass density $\rho$, width $w$, height $h$, and thickness $d$. A Cartesian coordinate system is chosen such that the $z$-axis coincides with the hinge axis, the $x$-axis extends along the width of the door, and the $y$-axis extends through its thickness. The dimensions of the door are therefore
+\begin{equation}
+0 \le x \le w,\,0 \le y \le \ {d},\,0 \le z \le h.
 \end{equation}
-The reduced coefficients $A$, $B$, and $C$ are used throughout, since they are the
-quantities returned directly by a fit without separate knowledge of $I$.
+Since the door rotates about the $z$-axis, the perpendicular distance from a mass element to the rotation axis is
+\begin{equation}
+r^2=x^2+y^2.
+\end{equation}
+Substituting this expression into the definition of moment of inertia gives
+\begin{equation}
+I=\int (x^2+y^2)\,dm.
+\end{equation}
+Because the mass distribution is uniform, the infinitesimal mass element can be expressed as
+\begin{equation}
+dm=\rho\,dV,
+\end{equation}
+where
+\begin{equation}
+dV=dx\,dy\,dz.
+\end{equation}
+Thus,
+\begin{equation}
+dm=\rho\,dx\,dy\,dz.
+\end{equation}
+Substituting into the moment of inertia integral yields
+\begin{equation}
+I=\rho\int_0^h\int_{0}^{d}\int_0^w(x^2+y^2)\,dx\,dy\,dz.
+\end{equation}
+Separating the integral into two terms gives
+\begin{equation}
+I=\rho\int_0^{h}dz\int_{0}^{d}\int_0^w(x^2+y^2)\,dx\,dy\\
+\end{equation}
+\begin{equation}
+I=\rho h\int_{0}^{d}(\frac{1}{3}w^3+wy^2)\,dy\\
+\end{equation}
+Since the thickness of a typical door is much smaller than its width $(d \ll w)$, the term containing $d^2$ is negligible compared with the term containing $w^2$. Therefore,
+\begin{equation}
+I=\frac{1}{3}\rho hwd(w^2+d^2)\approx\frac{1}{3}\rho hw^3d\\
+\end{equation}
+Using the relation
+\begin{equation}
+\rho=\frac{m}{dwh}
+\end{equation}
+the moment of inertia becomes
+\begin{equation}
+I \approx \frac{1}{3}mw^2.
+\end{equation}
 
-\subsection{Moment of Inertia of the Door}
-The moment of inertia about the hinge is obtained from $I=\int r_\perp^2\,dm$ with
-$r_\perp^2=x^2+y^2$ for a plate of uniform density $\rho$.
+\subsection{Derivation of Frictional Torque Models}
+In the original paper, the frictional torque acting on the rotating door is introduced as
+\begin{equation}
+\tau_f = a + b\omega + c\omega^2.
+\end{equation}
 
-\begin{equationbreakdown}{Reducing $I$ to $\tfrac{1}{3}mw^2$}
-Taking the hinge as the $z$-axis, width along $x$ ($0\le x\le w$) and thickness along $y$
-($0\le y\le d$),
-\begin{equation*}
-I=\rho\int_0^h\!\!\int_0^d\!\!\int_0^w\!\bigl(x^2+y^2\bigr)\,dx\,dy\,dz
- =\rho\,h\,d\,\Bigl(\tfrac{1}{3}w^3+w\,\tfrac{1}{3}d^2\Bigr)
- =\tfrac13\rho\,h\,d\,w\,(w^2+d^2).
-\end{equation*}
-A door is thin, $d\ll w$, so the $d^2$ term is negligible. Using $\rho=m/(whd)$,
-\begin{equation*}
-I\approx\tfrac13\rho\,h\,d\,w^3=\tfrac13 mw^2.
-\end{equation*}
-For our door this is $I=\tfrac13(13.7)(0.833)^2=3.17~\mathrm{kg\,m^2}$.
-\end{equationbreakdown}
+However, the physical origin of each term is not discussed in detail. In this section, the three contributions are derived from fundamental physical principles.
+\subsubsection{Dry friction Torque}
+Dry friction originates from contact between the hinge surfaces. The friction force is given by
+\begin{equation}
+F_{\mathrm{dry}}=\mu N,
+\end{equation}
+which is approximately independent of velocity. Since torque is defined as
+\begin{equation}
+\tau=rF,
+\end{equation}
+the corresponding frictional torque is approximately constant,
+\begin{equation}
+\tau_{\mathrm{dry}}=a.
+\end{equation}
+\subsubsection{Stokes Friction Torque}
+For motion through a fluid at low velocity, Stokes' law states that the resistive force is proportional to velocity,
+\begin{equation}
+F_{\mathrm{Stokes}}\propto v.
+\end{equation}
+For a rotating door, the linear velocity of a point at distance $r$ from the axis is
+\begin{equation}
+v=r\omega.
+\end{equation}
+Therefore,
+\begin{equation}
+\tau_{\mathrm{Stokes}}=rF_{\mathrm{Stokes}}
+\propto r(r\omega),
+\end{equation}
+which leads to a torque proportional to angular velocity,
+\begin{equation}
+\tau_{\mathrm{Stokes}}=b\omega.
+\end{equation}
+\subsubsection{Newtonian Drag Torque}
+At higher velocities, air resistance is described by the Newtonian drag equation
+\begin{equation}
+F_D=\frac12 C_D\rho A v^2.
+\end{equation}
+Since $v=r\omega$,
+\begin{equation}
+F_D\propto (r\omega)^2.
+\end{equation}
+The resulting torque is
+\begin{equation}
+\tau_D=rF_D
+\propto r(r\omega)^2,
+\end{equation}
+which is proportional to the square of angular velocity,
+\begin{equation}
+\tau_D=c\omega^2.
+\end{equation}
+Combining all three contributions gives the general frictional torque model
+\begin{equation}
+\tau_f=a+b\omega+c\omega^2.
+\end{equation}
 
-\subsection{Origin of the Three Torque Terms}
-The three contributions to $\tau_f$ have distinct physical origins, which is what later
-allows the fitted coefficients to be judged. Dry friction at the bearings is essentially
-independent of speed, so $\tau_{\mathrm{dry}}=a$. A Stokes drag force is proportional to the
-local velocity $v=r\omega$, and because torque introduces a further factor of $r$, it gives
-$\tau_{\mathrm{Stokes}}=b\omega$. Newtonian air drag scales as $v^2$, and the same argument
-gives $\tau_{\mathrm{Newton}}=c\omega^2$. Which contribution dominates cannot be decided
-a priori.
 
-\subsection{Solving the Equation of Motion}
-Equation~\eqref{eq:ode} is separable. Retaining a single term at a time gives the three
-one-mechanism solutions,
-\begin{align}
-\omega_{D}(t) &= \omega_0 - A t,
-&\omega_{S}(t) &= \omega_0\,e^{-Bt},
-&\omega_{N}(t) &= \frac{\omega_0}{1+C\omega_0 t},
-\end{align}
-while the pairwise combinations give
-\begin{align}
-\omega_{DS}(t) &= \Bigl(\omega_0+\tfrac{A}{B}\Bigr)e^{-Bt}-\tfrac{A}{B}, \\
-\omega_{SN}(t) &= \frac{B\,\omega_0}{(B+C\omega_0)\,e^{Bt}-C\omega_0}, \\
-\omega_{DN}(t) &= \sqrt{\tfrac{A}{C}}\;
-   \tan\!\Bigl(\arctan\!\bigl(\omega_0\sqrt{\tfrac{C}{A}}\bigr)-\sqrt{AC}\,t\Bigr).
-\end{align}
-The general solution for $a,b,c\neq0$ is given in the appendix of the original paper. It is
-not needed here, since in every fit at least one coefficient was driven to zero. All six
-expressions are implemented in \texttt{src/friction\_models.py}.
+
+\subsection{Derivation of the Equation of Motion}
+
+After deriving the moment of inertia and the frictional torque model, the equation governing the rotational motion of the door can be obtained using Newton's second law for rotational systems.
+
+For rotational motion about a fixed axis,
+
+\begin{equation}
+\sum\tau = I\alpha,
+\end{equation}
+
+where $I$ is the moment of inertia and $\alpha$ is the angular acceleration.
+
+Since angular acceleration is defined as the time derivative of angular velocity,
+
+\begin{equation}
+\alpha=\frac{d\omega}{dt},
+\end{equation}
+
+Newton's second law becomes
+
+\begin{equation}
+\sum\tau = I\frac{d\omega}{dt}.
+\end{equation}
+
+The only torque considered in this model is the frictional torque opposing the motion of the door. Therefore,
+
+\begin{equation}
+\sum\tau = -\tau_f.
+\end{equation}
+
+The negative sign appears because friction always acts opposite to the direction of rotation and therefore reduces the angular velocity.
+
+Substituting the general frictional torque model,
+
+\begin{equation}
+\tau_f=a+b\omega+c\omega^2,
+\end{equation}
+
+into Eq. (4) gives
+
+\begin{equation}
+-I\frac{d\omega}{dt}
+=
+a+b\omega+c\omega^2.
+\end{equation}
+
+This first-order nonlinear differential equation governs the rotational motion of the slammed door and serves as the starting point for all subsequent friction models analyzed in this study.
+
+
+
+\subsection{Analytical Solutions of the Friction Models}
+The original paper directly presents analytical solutions for the D, S, N, DS, DN, and SN models. While the derivation of the most general DSN model is already provided in the Appendix of the original paper, the intermediate mathematical steps leading to the remaining analytical solutions are omitted. Therefore, this section derives the D, S, N, DS, DN, and SN models in detail, starting from the governing differential equation obtained in the previous section.
+\subsubsection{Dry Friction Model (D)}
+For the dry friction model, only the constant friction term is considered. The governing equation becomes
+\begin{equation}
+-I\frac{d\omega}{dt}=a.
+\end{equation}
+Rearranging and integrating,
+\begin{equation}
+\int d\omega=-\frac{a}{I}\int dt.
+\end{equation}
+Applying the initial condition $\omega(0)=\omega_0$, the solution is
+\begin{equation}
+\boxed{
+\omega_D(t)=\omega_0-\frac{a}{I}t}.
+\end{equation}
+This model predicts a linear decrease in angular velocity.
+\subsubsection{Stokes Friction Model (S)}
+For the Stokes friction model,
+\begin{equation}
+-I\frac{d\omega}{dt}=b\omega.
+\end{equation}
+Separating variables,
+\begin{equation}
+\frac{d\omega}{\omega}=-\frac{b}{I}dt.
+\end{equation}
+Integrating both sides and applying the initial condition $\omega(0)=\omega_0$ gives
+\begin{equation}
+\boxed{
+\omega_S(t)=\omega_0e^{-bt/I}
+}.
+\end{equation}
+This solution represents exponential decay.
+\subsubsection{Newtonian Drag Model (N)}
+For the Newtonian drag model,
+\begin{equation}
+-I\frac{d\omega}{dt}=c\omega^2.
+\end{equation}
+Separating variables,
+\begin{equation}
+\frac{d\omega}{\omega^2}=-\frac{c}{I}dt.
+\end{equation}
+Integrating both sides and applying the initial condition $\omega(0)=\omega_0$ gives
+\begin{equation}
+\boxed{
+\omega_N(t)=\frac{\omega_0}{1+\dfrac{c\omega_0}{I}t}
+}.
+\end{equation}  
+Unlike the D and S models, the Newtonian model predicts an inverse-time decay of angular velocity.
+
+
+
+\subsubsection{Dry and Stokes Friction Model (DS)}
+
+For the DS model, the Newtonian drag term is neglected $(c=0)$. The governing equation becomes
+
+\begin{equation}
+-I\frac{d\omega}{dt}=a+b\omega.
+\end{equation}
+
+Separating variables,
+
+\begin{equation}
+\frac{d\omega}{a+b\omega}
+=
+-\frac{1}{I}dt.
+\end{equation}
+
+Integrating both sides and applying the initial condition $\omega(0)=\omega_0$ yields
+
+\begin{equation}
+\boxed{
+\omega_{DS}(t)
+=
+\left(\omega_0+\frac{a}{b}\right)
+\exp\left(-\frac{bt}{I}\right)
+-\frac{a}{b}
+}.
+\end{equation}
+
+\subsubsection{Dry and Newtonian Drag Model (DN)}
+
+For the DN model, the Stokes friction term is neglected $(b=0)$. The governing equation becomes
+
+\begin{equation}
+-I\frac{d\omega}{dt}
+=
+a+c\omega^2.
+\end{equation}
+
+Separating variables,
+
+\begin{equation}
+\frac{d\omega}{a+c\omega^2}
+=
+-\frac{1}{I}dt.
+\end{equation}
+
+Using the standard integral
+
+\begin{equation}
+\int\frac{dx}{a+cx^2}
+=
+\frac{1}{\sqrt{ac}}
+\tan^{-1}
+\left(
+\sqrt{\frac{c}{a}}x
+\right),
+\end{equation}
+
+and applying the initial condition $\omega(0)=\omega_0$, we obtain
+
+\begin{equation}
+\boxed{
+\omega_{DN}(t)
+=
+\frac{
+\omega_0
+-
+\sqrt{\frac{a}{c}}
+\tan\!\left(\frac{\sqrt{ac}}{I}t\right)
+}
+{
+1+
+\omega_0
+\sqrt{\frac{c}{a}}
+\tan\!\left(\frac{\sqrt{ac}}{I}t\right)
+}
+}.
+\end{equation}
+
+\subsubsection{Stokes and Newtonian Drag Model (SN)}
+
+For the SN model, the dry friction term is neglected $(a=0)$. The governing equation becomes
+
+\begin{equation}
+-I\frac{d\omega}{dt}
+=
+b\omega+c\omega^2.
+\end{equation}
+
+Separating variables,
+
+\begin{equation}
+\frac{d\omega}
+{\omega(b+c\omega)}
+=
+-\frac{1}{I}dt.
+\end{equation}
+
+Using partial fraction decomposition and applying the initial condition $\omega(0)=\omega_0$, the solution becomes
+
+\begin{equation}
+\boxed{
+\omega_{SN}(t)
+=
+\frac{
+-b\omega_0
+}
+{
+c\omega_0
+-
+(\omega_0 c+b)
+\exp\!\left(\frac{bt}{I}\right)
+}
+}.
+\end{equation}
 
 % =========================================================================
 \section{Physical Approximations and Limiting Cases}
