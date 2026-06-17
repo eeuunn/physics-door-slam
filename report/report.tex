@@ -89,10 +89,7 @@ motion is opposed only by friction at the hinges and by air drag on the door sur
 model the door as a uniform thin rectangular plate of width $w$ and mass $m$, with a
 smartphone fixed at a distance $r$ from the axis.
 To ensure the accuracy of the physical parameters, the door was detached from its hinges (Fig.~\ref{fig:door_removed}) to allow for direct measurement of its mass, height, and width. The experimental setup with the smartphone attached is shown in Fig.~\ref{fig:setup}.
-In contrast to the original experiment,
-which recorded a radial acceleration and converted it through $\omega=\sqrt{a_r/r}$, the
-gyroscope used here reports the angular velocity directly and removes this intermediate
-step. The measured quantities are listed in Table~\ref{tab:variables}.
+The angular velocity was measured directly using the smartphone's gyroscope sensor via the Phyphox application. This direct measurement approach eliminates the intermediate conversion step from radial acceleration used in previous studies, thereby reducing potential errors. The measured quantities are listed in Table~\ref{tab:variables}.
 
 \begin{figure}[h!]
 \centering
@@ -243,6 +240,7 @@ which is proportional to the square of angular velocity,
 \begin{equation}
 \tau_D=c\omega^2.
 \end{equation}
+
 Combining all three contributions gives the general frictional torque model
 \begin{equation}
 \tau_f=a+b\omega+c\omega^2.
@@ -275,22 +273,17 @@ Newton's second law becomes
 \end{equation}
 
 The only torque considered in this model is the frictional torque opposing the motion of the door. Therefore,
-
-\begin{equation}
+\begin{equation}\label{eq:net_torque}
 \sum\tau = -\tau_f.
 \end{equation}
-
 The negative sign appears because friction always acts opposite to the direction of rotation and therefore reduces the angular velocity.
 
 Substituting the general frictional torque model,
-
-\begin{equation}
+\begin{equation}\label{eq:f_torque}
 \tau_f=a+b\omega+c\omega^2,
 \end{equation}
-
-into Eq. (4) gives
-
-\begin{equation}
+into Eq.~\eqref{eq:net_torque} gives
+\begin{equation}\label{eq:ode}
 -I\frac{d\omega}{dt}
 =
 a+b\omega+c\omega^2.
@@ -540,6 +533,15 @@ data.}
 \label{fig:fits}
 \end{figure}
 
+The fit quality is quantitatively compared in Fig.~\ref{fig:gof}, showing the $R^2$ values and the Information Criterion (AIC). While $R^2$ is high for all models, the $\Delta$AIC clearly penalizes models that fail to capture the curvature, especially in the slow slam case.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{fig3_gof.png}
+\caption{Comparison of fit quality for all six models across the two slams: (a) coefficient of determination $R^2$, and (b) relative Information Criterion $\Delta$AIC (lower is better).}
+\label{fig:gof}
+\end{figure}
+
 \subsection{Numerical Check of the Analytical Solutions}
 To confirm the closed-form expressions of Section~2, Eq.~\eqref{eq:ode} was integrated
 directly with \texttt{scipy.integrate.solve\_ivp} (RK45) using the fitted coefficients, and
@@ -550,10 +552,29 @@ form is available.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.66\linewidth]{fig4_simulation.png}
+\includegraphics[width=0.85\linewidth]{fig4_simulation.png}
 \caption{Analytic solution versus direct numerical integration for the slow slam. The curves
 are indistinguishable (maximum difference $\sim10^{-8}$~rad/s).}
 \label{fig:sim}
+\end{figure}
+
+\subsection{Comparative Analysis of Simulation Models}
+To further investigate the qualitative differences between the friction mechanisms, all six models were simulated over a longer duration until the door comes to a complete rest. Using the numerical integration framework established in Section 4.3, we compare the velocity decay profiles for the Dry, Stokes, Newtonian, and combined models.
+A visual representation of the door motion governed by the full DSN model is shown in Fig.~\ref{fig:door_strip}, illustrating how the door's angular position changes over time as it approaches the frame.
+As shown in Fig.~\ref{fig:sim_models}, the models diverge significantly as the angular velocity decreases. The dry friction model predicts a linear decrease and a finite stopping time, while the Stokes and Newtonian models exhibit characteristic exponential and inverse-time asymptotic behaviors, respectively. This comprehensive simulation, conducted by Seong, confirms that while models may appear similar in the high-velocity regime of a fast slam, their long-term dynamics are governed by the specific velocity dependence of the frictional torque.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{fig7_door_strip.png}
+\caption{Stroboscopic visualization of the door motion simulated using the full DSN friction model, showing the angular displacement from $100^\circ$ to impact.}
+\label{fig:door_strip}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{fig6_sim_models.png}
+\caption{Comparison of the six friction models over an extended simulation time. The distinct decay characteristics of constant (dry), linear (Stokes), and quadratic (Newtonian) terms are clearly visible.}
+\label{fig:sim_models}
 \end{figure}
 
 % =========================================================================
